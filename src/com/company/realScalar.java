@@ -1,4 +1,7 @@
 package com.company;
+
+import java.text.DecimalFormat;
+
 public class realScalar implements Scalar {
     private double v;
     public realScalar(double v)
@@ -45,13 +48,10 @@ public class realScalar implements Scalar {
 
     public String toString()
     {
-        String output="";
-        Double v= this.getVal();
-        output= v.toString();
-        String[] parts = output.split(".");
-        if (parts[1].length()>3);
-        parts[1].substring(0,4);
-        return parts[0] + parts[1];
+        String output="###.###";
+        DecimalFormat df= new DecimalFormat(output);
+       String format= df.format(getVal());
+       return format;
     }
 
     @Override
