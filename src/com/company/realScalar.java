@@ -25,6 +25,14 @@ public class realScalar implements Scalar {
         s.accept(visiterAdd, this);
         return visiterAdd.getAns();
     }
+    public Scalar power(int exp)
+    {
+       double newV=1.0;
+       for(int i=0; i<exp; i++)
+           newV= newV*v;
+       realScalar ans= new realScalar(newV);
+       return ans;
+    }
     public Scalar mul(Scalar s)
     {
         VisitorMul visiterMul=new VisitorMul();
@@ -33,12 +41,9 @@ public class realScalar implements Scalar {
     }
     public Scalar mul(int i)
     {
-         return new realScalar(this.getVal()*i);
+        return new realScalar(this.getVal()*i);
     }
-    public Scalar power (int exp)
-    {
-        return null;
-    }
+
     public int sign(){
        if (this.getVal()>=0)
            return 1;
