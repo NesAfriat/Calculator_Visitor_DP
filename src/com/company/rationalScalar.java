@@ -34,9 +34,21 @@ public class rationalScalar implements Scalar {
     {
         return new rationalScalar(this.a*i,this.b);
     }
+
     public Scalar power (int exp)
     {
-        return null;
+        rationalScalar res;
+        if (exp==0) res=new rationalScalar(1,1);
+        else {
+            int a1 = this.a;
+            int b1 = this.b;
+            for (int i = 1; i < exp; i = i + 1) {
+                a1 = a1 * a;
+                b1 = b1 * b;
+            }
+            res=new rationalScalar(a1,b1);
+        }
+        return res;
     }
     public int sign(){
         if ((this.a<0&this.b>0)||(this.a>0&this.b<0))

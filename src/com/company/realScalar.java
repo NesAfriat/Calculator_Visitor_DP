@@ -53,6 +53,7 @@ public class realScalar implements Scalar {
 
     public String toString()
     {
+
         String output="###.###";
         DecimalFormat df= new DecimalFormat(output);
        String format= df.format(getVal());
