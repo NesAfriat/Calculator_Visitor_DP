@@ -27,7 +27,7 @@ public class Monomial {
     {
         if (!this.isMatch(m))
             return null;
-        return new Monomial(this.coe.mul(m.coe),exp*m.exp);
+        return new Monomial(this.coe.mul(m.coe),exp+m.exp);
     }
     public Scalar evaluate(Scalar scalar)
     {
@@ -37,11 +37,11 @@ public class Monomial {
     }
     public Monomial derivative()
     {
-        realScalar real=new realScalar(0.5);
+        RealScalar real=new RealScalar(0.5);
         if (exp==0) {
             if(real.isMatch(coe))
-            return new Monomial(new realScalar(0), 1);
-            else return new Monomial(new rationalScalar(0,1),0);
+            return new Monomial(new RealScalar(0), 1);
+            else return new Monomial(new RationalScalar(0,1),0);
         }
         if (exp==1)
         {
@@ -59,7 +59,6 @@ public class Monomial {
             output = output + coe.toString();
         } else if (exp > 0) {
             if (exp == 1) {
-                System.out.println("here is the scalar " + coe.toString());
                 if (coe.toString().equals("1"))
                     output = output + "x";
                 else {

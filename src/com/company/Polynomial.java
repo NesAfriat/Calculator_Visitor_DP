@@ -1,45 +1,46 @@
 package com.company;
-import java.awt.*;
-import java.util.HashMap;
+import com.sun.deploy.security.SelectableSecurityManager;
+
 import java.util.Map;
 import java.util.TreeMap;
 
 public class Polynomial {
     private TreeMap<Integer, Monomial> polynom;
-
     public Polynomial() {
     }
 
     public Polynomial build(char type, String input) {
-        polynom = new TreeMap<>();
+        this.polynom=new TreeMap<>();
         int exp = 0;
-        Scalar zeroReal = new realScalar(0);
-        Scalar zeroRational = new rationalScalar(0, 1);
+        Scalar zeroReal = new RealScalar(0);
+        Scalar zeroRational = new RationalScalar(0, 1);
         Monomial m;
+        int[] ratioConvert= new int[2];
         for (String mono : input.split(" ")) {
             if (mono == "0") {
                 if (type == 'Q')
                     m = new Monomial(zeroRational, exp);
                 else
                     m = new Monomial(zeroReal, exp);
-                polynom.put(exp, m);
+                getPolynom().put(exp, m);
             } else {
                 if (type == 'Q') {
-                    rationalScalar s = new rationalScalar(stringToRatio(mono)[0], stringToRatio(mono)[1]);
+                        ratioConvert= stringToRatio(mono);
+                    RationalScalar s = new RationalScalar(ratioConvert[0], ratioConvert[1]);
                     m = new Monomial(s, exp);
-                    polynom.put(exp, m);
+                    getPolynom().put(exp, m);
                 } else {
-                    realScalar s = new realScalar(stringToDouble(mono));
+                    RealScalar s = new RealScalar(stringToDouble(mono));
                     m = new Monomial(s, exp);
-                    polynom.put(exp, m);
+                    getPolynom().put(exp, m);
                 }
             }
             exp++;
         }
         if (type == 'Q') {
-            polynom.put(-1, null); //recognition of rational scalar type polynom
+            getPolynom().put(-1, null); //recognition of rational scalar type polynom
         } else {
-            polynom.put(-2, null);//recognition of real scalar type polynom
+            getPolynom().put(-2, null);//recognition of real scalar type polynom
         }
         return this;
     }
@@ -50,18 +51,17 @@ public class Polynomial {
         return ans;
     }
 
-    private int[] stringToRatio(String s) {
-        boolean minus = false;
-        if (s.charAt(0) == '-') {
-            minus = true;
-            s.substring(1);
-        }
-        String[] ratio = s.split("/");
-        int[] ans = new int[2];
-        ans[0] = Integer.parseInt(ratio[0]);
-        ans[1] = Integer.parseInt(ratio[0]);
-        if (minus)
-            ans[0] = -ans[0];
+        private int[] stringToRatio(String s) {
+            int[] ans = new int[2];
+            if (s.contains("/")) {
+                String[] numbers = s.split("/");
+                    ans[0] = Integer.parseInt(numbers[0]);
+                    ans[1] = Integer.parseInt(numbers[1]);
+            }
+            else {
+                ans[0] = Integer.valueOf(s);
+                ans[1] = 1;
+            }
         return ans;
     }
 
@@ -82,17 +82,17 @@ public class Polynomial {
         if (!isMatch(p))
             return null;
         TreeMap<Integer, Monomial> otherP = p.getPolynom();
-        int minSize = Math.min(polynom.size(), otherP.size());
+        int minSize = Math.min(getPolynom().size(), otherP.size());
         Polynomial ans = new Polynomial();
         String sum = "";
         int index = 0;
         for (int i = 0; i < minSize - 1; i++) {
-            Monomial tmp = polynom.get(i).add(otherP.get(i));
+            Monomial tmp = getPolynom().get(i).add(otherP.get(i));
             sum = sum + " " + tmp.getScalar().toString();
             index = i + 1;
         }
-        while (index < polynom.size() - 1) {
-            sum = sum + " " + polynom.get(index).getScalar().toString();
+        while (index < getPolynom().size() - 1) {
+            sum = sum + " " + getPolynom().get(index).getScalar().toString();
             index++;
         }
         while (index < otherP.size() - 1) {
@@ -104,7 +104,7 @@ public class Polynomial {
     }
 
     private char getType() {
-        if (polynom.containsKey(-1))
+        if (getPolynom().containsKey(-1))
             return 'Q';
         else
             return 'R';
@@ -115,55 +115,74 @@ public class Polynomial {
             return null;
         TreeMap<Integer, Monomial> otherP = p.getPolynom();
         Polynomial ans = new Polynomial();
-        ans.build(getType(), "0");
-        for (int i = 0; i < polynom.size() - 1; i++)
+        Scalar[] res;
+        Scalar zero;
+        int maxSize= otherP.lastKey() + getPolynom().lastKey()+1;
+        if(getType()=='Q') {
+            res = new RationalScalar[maxSize];
+            zero = new RationalScalar(0, 1);
+        }
+        else {
+            res = new RealScalar[maxSize];
+            zero=new RealScalar(0);
+        }
+        for (int i = 0; i < maxSize; i++)
+            res[i]=zero;
+        for (int i = 0; i <getPolynom().size() - 1; i++)
             for (int j = 0; j < otherP.size() - 1; j++) {
-                Monomial tmpMono = polynom.get(i).mul(otherP.get(j));
-                Polynomial tmpPol = new Polynomial();
-                String tmpAdd = "";
-                for (int k = 0; k < tmpMono.getExp(); k++) {
-                    tmpAdd = tmpAdd + "0" + " ";
+                Monomial tmpMono = getPolynom().get(i).mul(otherP.get(j));
+               res[tmpMono.getExp()]=res[tmpMono.getExp()].add(tmpMono.getScalar());
                 }
-                tmpPol.build(getType(), tmpAdd + tmpMono.getScalar().toString());
-                ans = ans.add(tmpPol);
-            }
+        String s="";
+            for(int i=0; i<maxSize; i++)
+                s= s+  res[i].toString()+ " ";
+            ans.build(getType(), s);
         return ans;
     }
 
     public Scalar evaluate(Scalar s)
     {
         Monomial evaluate=null;
-        Scalar ans= polynom.get(0).getScalar();
-        for(int i=1; i<polynom.size()-1; i++) {
-            evaluate = new Monomial(polynom.get(i).evaluate(s), 1);
+        Scalar ans= getPolynom().get(0).getScalar();
+        for(int i=1; i<getPolynom().size()-1; i++) {
+            evaluate = new Monomial(getPolynom().get(i).evaluate(s), 1);
             ans = ans.add(evaluate.getScalar());
         }
         return ans;
     }
 
-    public Polynomial derivative()
-    {
+    public Polynomial derivative() {
         Polynomial ans = new Polynomial();
         Monomial tmp;
-        for (int i = 0; i < ans.getPolynom().size(); i = i + 1)
-        {
-            tmp=this.getPolynom().get(i);
-            ans.getPolynom().put(i,tmp.derivative());//maybe we need to put in i-1-החזקה הייתה 2 ובפולינום החדש תהיה 1
+        int exp,subExp;
+        char type = getType();
+        Scalar coe;
+        String polyStr="";
+        for (int i = 1; i < getPolynom().size() - 1; i = i + 1) {
+            tmp = this.getPolynom().get(i);
+            tmp = tmp.derivative();
+            exp = tmp.getExp();
+            if (tmp.getScalar().sign() == 0)
+                polyStr = polyStr + "0" + " ";
+            else polyStr = polyStr + tmp.getScalar().toString() + " ";
         }
-        return ans;
+           ans= ans.build(type,polyStr);
+                return ans;
     }
 
     public String toString() {
         String ans = "";
-        Monomial m = null;
-        for (int i = 0; i < polynom.size() - 1; i++) {
-            m = polynom.get(i);
+        if(this.getPolynom().isEmpty())
+            return ans;
+        Monomial m;
+        for (int i = 0; i < getPolynom().size() - 1; i++) {
+            m = getPolynom().get(i);
                 if(m.getScalar().sign() == 1)
-                    ans = ans + "+" +polynom.get(i).toString();
+                    ans = ans + "+" +getPolynom().get(i).toString();
                 if(m.getScalar().sign()==-1)
-                ans = ans + polynom.get(i).toString();
+                ans = ans + getPolynom().get(i).toString();
         }
-        if (ans.charAt(0)== '+')
+        if (ans!="" && ans.charAt(0)== '+')
             ans= ans.substring(1);
         return ans;
     }

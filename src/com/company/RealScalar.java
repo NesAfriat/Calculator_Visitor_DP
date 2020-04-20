@@ -2,9 +2,9 @@ package com.company;
 
 import java.text.DecimalFormat;
 
-public class realScalar implements Scalar {
+public class RealScalar implements Scalar {
     private double v;
-    public realScalar(double v)
+    public RealScalar(double v)
     {
         this.v=v;
     }
@@ -30,7 +30,7 @@ public class realScalar implements Scalar {
        double newV=1.0;
        for(int i=0; i<exp; i++)
            newV= newV*v;
-       realScalar ans= new realScalar(newV);
+       RealScalar ans= new RealScalar(newV);
        return ans;
     }
     public Scalar mul(Scalar s)
@@ -41,7 +41,7 @@ public class realScalar implements Scalar {
     }
     public Scalar mul(int i)
     {
-        return new realScalar(this.getVal()*i);
+        return new RealScalar(this.getVal()*i);
     }
 
     public int sign(){
@@ -63,12 +63,12 @@ public class realScalar implements Scalar {
     }
 
     @Override
-    public void accept(Visitor visit, realScalar real) {
+    public void accept(Visitor visit, RealScalar real) {
         visit.visit(this, real);
     }
 
     @Override
-    public void accept(Visitor visit, rationalScalar ratio) {
+    public void accept(Visitor visit, RationalScalar ratio) {
         visit.visit(this, ratio);
     }
 }

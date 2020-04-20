@@ -1,10 +1,8 @@
 package com.company;
 
-import java.awt.*;
-
 public interface Visitor {
-    public void visit (realScalar real,realScalar real2);
-    public void visit(realScalar real, rationalScalar ratio);
-    public void visit (rationalScalar ratio,realScalar real);
-    public void visit(rationalScalar ratio, rationalScalar ratio2);
+    public void visit (RealScalar real, RealScalar real2);
+    public void visit(RealScalar real, RationalScalar ratio);
+    public void visit (RationalScalar ratio, RealScalar real);
+    public void visit(RationalScalar ratio, RationalScalar ratio2);
 }

@@ -7,6 +7,6 @@ public interface Scalar {
     public Scalar power(int exp);
     public int sign();
     public String toString();
-    public void accept(Visitor visit,realScalar real);
-    public void accept(Visitor visit, rationalScalar ratio);
+    public void accept(Visitor visit, RealScalar real);
+    public void accept(Visitor visit, RationalScalar ratio);
 }

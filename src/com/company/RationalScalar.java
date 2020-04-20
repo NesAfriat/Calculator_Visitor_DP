@@ -1,10 +1,10 @@
 package com.company;
 
-public class rationalScalar implements Scalar {
+public class RationalScalar implements Scalar {
     private int a;
     private int b;
 
-    public rationalScalar(int a, int b)
+    public RationalScalar(int a, int b)
     {
         this.a=a;
         this.b=b;
@@ -32,13 +32,13 @@ public class rationalScalar implements Scalar {
     }
     public Scalar mul(int i)
     {
-        return new rationalScalar(this.a*i,this.b);
+        return new RationalScalar(this.a*i,this.b);
     }
 
     public Scalar power (int exp)
     {
-        rationalScalar res;
-        if (exp==0) res=new rationalScalar(1,1);
+        RationalScalar res;
+        if (exp==0) res=new RationalScalar(1,1);
         else {
             int a1 = this.a;
             int b1 = this.b;
@@ -46,7 +46,7 @@ public class rationalScalar implements Scalar {
                 a1 = a1 * a;
                 b1 = b1 * b;
             }
-            res=new rationalScalar(a1,b1);
+            res=new RationalScalar(a1,b1);
         }
         return res;
     }
@@ -76,12 +76,12 @@ public class rationalScalar implements Scalar {
         return output;
     }
     @Override
-    public void accept(Visitor visit, realScalar real) {
+    public void accept(Visitor visit, RealScalar real) {
         visit.visit(this, real);
     }
 
     @Override
-    public void accept(Visitor visit, rationalScalar ratio) {
+    public void accept(Visitor visit, RationalScalar ratio) {
         visit.visit(this, ratio);
     }
 
