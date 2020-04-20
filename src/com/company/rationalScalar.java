@@ -53,6 +53,8 @@ public class rationalScalar implements Scalar {
     public int sign(){
         if ((this.a<0&this.b>0)||(this.a>0&this.b<0))
             return -1;
+        else if (a==0)
+            return 0;
         else return 1;
     }
     public String toString()

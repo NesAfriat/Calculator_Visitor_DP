@@ -45,10 +45,12 @@ public class realScalar implements Scalar {
     }
 
     public int sign(){
-       if (this.getVal()>=0)
+       if (this.getVal()>0)
            return 1;
        else
+           if(getVal()<0)
            return -1;
+        return 0;
     }
 
     public String toString()

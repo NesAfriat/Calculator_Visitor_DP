@@ -53,16 +53,29 @@ public class Monomial {
     {
         return coe.sign();
     }
-    public String toString (){
-        String output="";
-        if (!coe.toString().equalsIgnoreCase("1")&exp!=0||(exp==0))
-        {
-            output=output+coe.toString();
-        }
-        if (exp>0) {
-            output = output + "x";
-            if (exp > 1) {
-                output = output + "^" + exp;
+    public String toString () {
+        String output = "";
+        if (exp == 0) {
+            output = output + coe.toString();
+        } else if (exp > 0) {
+            if (exp == 1) {
+                System.out.println("here is the scalar " + coe.toString());
+                if (coe.toString().equals("1"))
+                    output = output + "x";
+                else {
+                    if (coe.toString().equals("-1"))
+                        output = output + "-x";
+                    else output = output + coe.toString() + "x";
+                }
+            } else {
+
+                if (coe.toString().equals("1"))
+                    output = output + "x^" + exp;
+                else {
+                    if (coe.toString().equals("-1"))
+                        output = output + "-x^" + exp;
+                    else output = output + coe.toString() + "x^" + exp;
+                }
             }
         }
         return output;
