@@ -9,6 +9,11 @@ public class RationalScalar implements Scalar {
         this.a=a;
         this.b=b;
     }
+    public RationalScalar(int a)
+    {
+        this.a=a;
+        this.b=1;
+    }
     public boolean isMatch (Scalar s)
     {
         VisitorIsMatch vim= new VisitorIsMatch();
@@ -34,9 +39,9 @@ public class RationalScalar implements Scalar {
     {
         return new RationalScalar(this.a*i,this.b);
     }
-
     public Scalar power (int exp)
     {
+
         RationalScalar res;
         if (exp==0) res=new RationalScalar(1,1);
         else {
@@ -53,7 +58,7 @@ public class RationalScalar implements Scalar {
     public int sign(){
         if ((this.a<0&this.b>0)||(this.a>0&this.b<0))
             return -1;
-        else if (a==0)
+        if (this.a==0)
             return 0;
         else return 1;
     }
@@ -71,6 +76,11 @@ public class RationalScalar implements Scalar {
                 if (b<0)
                     output=output+"(-"+a+"/"+(-b)+")";
                 else output=output+"("+a+"/"+b+")";
+            }
+            else {
+                if (this.a<0&this.b<0)
+                    output=output+"("+(-a)+"/"+(-b)+")";
+                else output = output + "(" + a + "/" + b + ")";
             }
         }
         return output;

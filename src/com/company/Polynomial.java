@@ -1,23 +1,31 @@
 package com.company;
-import com.sun.deploy.security.SelectableSecurityManager;
 
-import java.util.Map;
+
 import java.util.TreeMap;
 
 public class Polynomial {
     private TreeMap<Integer, Monomial> polynom;
     public Polynomial() {
+        this.polynom=new TreeMap<>();
     }
 
     public Polynomial build(char type, String input) {
-        this.polynom=new TreeMap<>();
-        int exp = 0;
+        Integer exp = 0;
         Scalar zeroReal = new RealScalar(0);
         Scalar zeroRational = new RationalScalar(0, 1);
         Monomial m;
+        if (input.equals("0"))
+        {
+            if (type == 'Q')
+                m = new Monomial(zeroRational, exp);
+            else
+                m = new Monomial(zeroReal, exp);
+            getPolynom().put(exp, m);
+            return this;
+        }
         int[] ratioConvert= new int[2];
         for (String mono : input.split(" ")) {
-            if (mono == "0") {
+            if (mono.equals("0")) {
                 if (type == 'Q')
                     m = new Monomial(zeroRational, exp);
                 else
@@ -25,9 +33,9 @@ public class Polynomial {
                 getPolynom().put(exp, m);
             } else {
                 if (type == 'Q') {
-                        ratioConvert= stringToRatio(mono);
-                    RationalScalar s = new RationalScalar(ratioConvert[0], ratioConvert[1]);
-                    m = new Monomial(s, exp);
+                    ratioConvert= stringToRatio(mono);
+                    RationalScalar rt = new RationalScalar(ratioConvert[0], ratioConvert[1]);
+                    m = new Monomial(rt, exp);
                     getPolynom().put(exp, m);
                 } else {
                     RealScalar s = new RealScalar(stringToDouble(mono));
@@ -51,17 +59,17 @@ public class Polynomial {
         return ans;
     }
 
-        private int[] stringToRatio(String s) {
-            int[] ans = new int[2];
-            if (s.contains("/")) {
-                String[] numbers = s.split("/");
-                    ans[0] = Integer.parseInt(numbers[0]);
-                    ans[1] = Integer.parseInt(numbers[1]);
-            }
-            else {
-                ans[0] = Integer.valueOf(s);
-                ans[1] = 1;
-            }
+    private int[] stringToRatio(String s) {
+        int[] ans = new int[2];
+        if (s.contains("/")) {
+            String[] numbers = s.split("/");
+            ans[0] = Integer.parseInt(numbers[0]);
+            ans[1] = Integer.parseInt(numbers[1]);
+        }
+        else {
+            ans[0] = Integer.parseInt(s);
+            ans[1] = 1;
+        }
         return ans;
     }
 
@@ -72,7 +80,7 @@ public class Polynomial {
     public boolean isMatch(Polynomial p) {
         if (this.polynom.isEmpty() || p.getPolynom().isEmpty())
             throw new IllegalArgumentException("un-exist polynom");
-        if (this.polynom.firstKey() == p.getPolynom().firstKey()) //if both of their first keys are -2 or -1 their type are the same
+        if (this.getType() == p.getType()) //if both of their first keys are -2 or -1 their type are the same
             return true;
         else
             return false;
@@ -84,19 +92,28 @@ public class Polynomial {
         TreeMap<Integer, Monomial> otherP = p.getPolynom();
         int minSize = Math.min(getPolynom().size(), otherP.size());
         Polynomial ans = new Polynomial();
-        String sum = "";
+        String sum = "", addition;
         int index = 0;
         for (int i = 0; i < minSize - 1; i++) {
             Monomial tmp = getPolynom().get(i).add(otherP.get(i));
-            sum = sum + " " + tmp.getScalar().toString();
+            addition= tmp.getScalar().toString();
+            if(addition.contains("("))
+                addition=addition.substring(1,addition.length()-1);
+            sum = sum + " " + addition;
             index = i + 1;
         }
         while (index < getPolynom().size() - 1) {
-            sum = sum + " " + getPolynom().get(index).getScalar().toString();
+            addition=  getPolynom().get(index).getScalar().toString();
+            if(addition.contains("("))
+                addition=addition.substring(1,addition.length()-1);
+            sum = sum + " " + addition;
             index++;
         }
         while (index < otherP.size() - 1) {
-            sum = sum + " " + otherP.get(index).getScalar().toString();
+            addition=otherP.get(index).getScalar().toString();
+            if(addition.contains("("))
+                addition=addition.substring(1,addition.length()-1);
+            sum = sum + " " + addition;
             index++;
         }
         ans.build(this.getType(), sum.substring(1));
@@ -104,6 +121,8 @@ public class Polynomial {
     }
 
     private char getType() {
+
+
         if (getPolynom().containsKey(-1))
             return 'Q';
         else
@@ -131,12 +150,16 @@ public class Polynomial {
         for (int i = 0; i <getPolynom().size() - 1; i++)
             for (int j = 0; j < otherP.size() - 1; j++) {
                 Monomial tmpMono = getPolynom().get(i).mul(otherP.get(j));
-               res[tmpMono.getExp()]=res[tmpMono.getExp()].add(tmpMono.getScalar());
-                }
-        String s="";
-            for(int i=0; i<maxSize; i++)
-                s= s+  res[i].toString()+ " ";
-            ans.build(getType(), s);
+                res[tmpMono.getExp()]=res[tmpMono.getExp()].add(tmpMono.getScalar());
+            }
+        String s="",addition;
+        for(int i=0; i<maxSize; i++) {
+            addition = res[i].toString();
+            if (addition.contains("("))
+                addition= addition.substring(1,addition.length()-1);
+            s = s + addition + " ";
+        }
+        ans.build(getType(), s);
         return ans;
     }
 
@@ -154,35 +177,43 @@ public class Polynomial {
     public Polynomial derivative() {
         Polynomial ans = new Polynomial();
         Monomial tmp;
-        int exp,subExp;
+        int exp;
         char type = getType();
         Scalar coe;
-        String polyStr="";
+        String polyStr="", addition;
+
         for (int i = 1; i < getPolynom().size() - 1; i = i + 1) {
             tmp = this.getPolynom().get(i);
             tmp = tmp.derivative();
             exp = tmp.getExp();
             if (tmp.getScalar().sign() == 0)
                 polyStr = polyStr + "0" + " ";
-            else polyStr = polyStr + tmp.getScalar().toString() + " ";
+            else {
+                addition=tmp.getScalar().toString();
+                if (addition.contains("("))
+                    addition= addition.substring(1,addition.length()-1);
+                polyStr = polyStr + addition + " ";
+            }
         }
-           ans= ans.build(type,polyStr);
-                return ans;
+        if(getPolynom().size()==2)
+            polyStr = "0";
+        ans= ans.build(type,polyStr);
+        return ans;
     }
 
     public String toString() {
         String ans = "";
-        if(this.getPolynom().isEmpty())
-            return ans;
+        if(getPolynom().size()==1)
+            ans = getPolynom().get(0).toString();
         Monomial m;
-        for (int i = 0; i < getPolynom().size() - 1; i++) {
-            m = getPolynom().get(i);
-                if(m.getScalar().sign() == 1)
-                    ans = ans + "+" +getPolynom().get(i).toString();
-                if(m.getScalar().sign()==-1)
-                ans = ans + getPolynom().get(i).toString();
-        }
-        if (ans!="" && ans.charAt(0)== '+')
+            for (int i = 0; i < getPolynom().size() - 1; i++) {
+                m = getPolynom().get(i);
+                if (m.getScalar().sign() == 1)
+                    ans = ans + "+" + getPolynom().get(i).toString();
+                if (m.getScalar().sign() == -1)
+                    ans = ans + getPolynom().get(i).toString();
+            }
+        while (ans.charAt(0)== '+')
             ans= ans.substring(1);
         return ans;
     }

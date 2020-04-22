@@ -1,7 +1,6 @@
 package com.company;
 
 public class Calculator {
-
     private static void printTitle(String s) {
         System.out.println("\n========== " + s + " ==========");
     }
@@ -80,13 +79,13 @@ public class Calculator {
         printEval(R2, r, R2.evaluate(r));
         printEval(R3, r, R3.evaluate(r));
         printEval(R4, r, R4.evaluate(r));
-        RationalScalar q = new RationalScalar(0,1); // add builder for one parameter
+        RationalScalar q = new RationalScalar(0);
         printEval(Q1, q, Q1.evaluate(q));
         printEval(Q2, q, Q2.evaluate(q));
         printEval(Q3, q, Q3.evaluate(q));
         printEval(Q4, q, Q4.evaluate(q));
         printEval(Q5, q, Q5.evaluate(q));
-        q = new RationalScalar(1,1);
+        q = new RationalScalar(1);
         printEval(Q1, q, Q1.evaluate(q));
         printEval(Q2, q, Q2.evaluate(q));
         printEval(Q3, q, Q3.evaluate(q));
@@ -105,7 +104,6 @@ public class Calculator {
         printDerivate(Q4, Q4.derivative());
         printDerivate(Q5, Q5.derivative());
 
-
-
     }
 }
+

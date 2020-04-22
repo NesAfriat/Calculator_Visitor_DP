@@ -4,6 +4,7 @@ public class Monomial {
     private Scalar coe;
     private int exp;
 
+
     public Monomial(Scalar s,int exp){
         this.coe=s;
         this.exp=exp;
@@ -40,7 +41,7 @@ public class Monomial {
         RealScalar real=new RealScalar(0.5);
         if (exp==0) {
             if(real.isMatch(coe))
-            return new Monomial(new RealScalar(0), 1);
+                return new Monomial(new RealScalar(0), 1);
             else return new Monomial(new RationalScalar(0,1),0);
         }
         if (exp==1)
@@ -55,6 +56,8 @@ public class Monomial {
     }
     public String toString () {
         String output = "";
+        if (coe.toString().equals("0")&exp!=0)
+            return output;
         if (exp == 0) {
             output = output + coe.toString();
         } else if (exp > 0) {
@@ -87,5 +90,4 @@ public class Monomial {
     {
         return this.exp;
     }
-
 }

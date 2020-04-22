@@ -1,6 +1,6 @@
 package com.company;
 public class VisitorMul implements Visitor {
-    private Scalar ans;
+    private com.company.Scalar ans;
 
     @Override
     public void visit(RealScalar real, RealScalar real2) {
@@ -23,7 +23,7 @@ public class VisitorMul implements Visitor {
     }
 
 
-    public Scalar getAns() {
+    public com.company.Scalar getAns() {
         return this.ans;
     }
 }

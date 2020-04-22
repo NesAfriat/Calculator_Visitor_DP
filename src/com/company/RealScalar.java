@@ -10,7 +10,7 @@ public class RealScalar implements Scalar {
     }
     public double getVal()
     {
-    return this.v;
+        return this.v;
     }
 
     public boolean isMatch(Scalar s)
@@ -20,18 +20,18 @@ public class RealScalar implements Scalar {
         return isMatchVisiter.getIsMatch();
     }
     public Scalar add(Scalar s)
-        {
+    {
         VisitorAdd visiterAdd=new VisitorAdd();
         s.accept(visiterAdd, this);
         return visiterAdd.getAns();
     }
     public Scalar power(int exp)
     {
-       double newV=1.0;
-       for(int i=0; i<exp; i++)
-           newV= newV*v;
-       RealScalar ans= new RealScalar(newV);
-       return ans;
+        double newV=1.0;
+        for(int i=0; i<exp; i++)
+            newV= newV*v;
+        RealScalar ans= new RealScalar(newV);
+        return ans;
     }
     public Scalar mul(Scalar s)
     {
@@ -45,21 +45,20 @@ public class RealScalar implements Scalar {
     }
 
     public int sign(){
-       if (this.getVal()>0)
-           return 1;
-       else
-           if(getVal()<0)
-           return -1;
+        if (this.getVal()>0)
+            return 1;
+        else
+        if(getVal()<0)
+            return -1;
         return 0;
     }
 
     public String toString()
     {
-
         String output="###.###";
         DecimalFormat df= new DecimalFormat(output);
-       String format= df.format(getVal());
-       return format;
+        String format= df.format(getVal());
+        return format;
     }
 
     @Override

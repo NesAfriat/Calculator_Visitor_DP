@@ -1,7 +1,7 @@
 package com.company;
 
-public class VisitorIsMatch implements Visitor {
-private boolean isMatch;
+public class VisitorIsMatch implements Visitor{
+    private boolean isMatch;
     @Override
     public void visit(RealScalar real, RealScalar real2) {
         isMatch=true;
